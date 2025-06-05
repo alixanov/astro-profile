@@ -1,22 +1,27 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
 
-// Анимации
-const float = keyframes`
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
+// Subtle Animations
+const gentleGlow = keyframes`
+  0%, 100% { filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.3)); }
+  50% { filter: drop-shadow(0 0 15px rgba(192, 132, 252, 0.5)); }
 `;
 
-const sparkle = keyframes`
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
+const subtleFlicker = keyframes`
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.8; }
 `;
 
-const pulse = keyframes`
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+const candleFlicker = keyframes`
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.05); }
+`;
+
+const runicGlow = keyframes`
+  0%, 100% { text-shadow: 0 0 5px #8b5cf6, 0 0 10px #8b5cf6; }
+  50% { text-shadow: 0 0 8px #c084fc, 0 0 15px #c084fc; }
 `;
 
 const ProfileContainer = styled(motion.div)`
@@ -24,15 +29,15 @@ const ProfileContainer = styled(motion.div)`
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #ffffff;
+  background: radial-gradient(ellipse at center, #1a0b2e 0%, #0a0a0a 100%);
+  font-family: 'Spline Sans Mono', monospace;
+  color: #ddd6fe;
   position: relative;
   overflow: hidden;
-  padding: 2rem 1rem;
+  padding: 3rem 1.5rem;
 `;
 
-const StarField = styled.div`
+const MysticalBackground = styled.div`
   position: absolute;
   top: 0;
   left: 0;
@@ -40,167 +45,274 @@ const StarField = styled.div`
   height: 100%;
   z-index: 1;
   
-  .star {
+  .smoke {
     position: absolute;
-    width: 2px;
-    height: 2px;
-    background: white;
+    width: 50px;
+    height: 50px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.3), transparent);
     border-radius: 50%;
-    animation: ${sparkle} 3s infinite;
+    filter: blur(15px);
+    opacity: 0.4;
     
-    &:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
-    &:nth-child(2) { top: 25%; right: 15%; animation-delay: 0.5s; }
-    &:nth-child(3) { top: 45%; left: 8%; animation-delay: 1s; }
-    &:nth-child(4) { top: 60%; right: 12%; animation-delay: 1.5s; }
-    &:nth-child(5) { top: 75%; left: 20%; animation-delay: 2s; }
-    &:nth-child(6) { top: 85%; right: 25%; animation-delay: 2.5s; }
+    &:nth-child(1) { left: 15%; top: 20%; }
+    &:nth-child(2) { left: 30%; top: 60%; }
+    &:nth-child(3) { left: 70%; top: 30%; }
+    &:nth-child(4) { left: 85%; top: 80%; }
+  }
+  
+  .candle {
+    position: absolute;
+    bottom: 15%;
+    width: 3px;
+    height: 10px;
+    background: linear-gradient(to top, #fbbf24, #f59e0b);
+    animation: ${candleFlicker} 3s ease-in-out infinite;
+    filter: blur(1px);
+    
+    &:nth-child(5) { left: 10%; }
+    &:nth-child(6) { right: 10%; }
+  }
+`;
+
+const RunicCircle = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 450px;
+  height: 450px;
+  border: 2px solid rgba(139, 92, 246, 0.2);
+  border-radius: 50%;
+  z-index: 1;
+  animation: ${gentleGlow} 5s ease-in-out infinite;
+  
+  &::before {
+    content: '⚹ ☽ ⚹ ☾ ⚹ ☽ ⚹ ☾';
+    position: absolute;
+    top: -15px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    color: #8b5cf6;
+    animation: ${subtleFlicker} 4s ease-in-out infinite;
+    letter-spacing: 30px;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 250px;
+    height: 250px;
+    border: 1px solid rgba(192, 132, 252, 0.15);
+    border-radius: 50%;
+    animation: ${gentleGlow} 6s ease-in-out infinite;
   }
 `;
 
 const ProfileHeader = styled(motion.div)`
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
   z-index: 2;
 `;
 
 const ProfileTitle = styled.h1`
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 2.5rem;
-  background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+  font-family: 'Spline Sans Mono', monospace;
+  font-weight: 600;
+  font-size: 3.5rem;
+  background: linear-gradient(135deg, #ddd6fe 0%, #8b5cf6 50%, #c084fc 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 0.5rem;
-  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.1em;
+  animation: ${runicGlow} 4s ease-in-out infinite;
 
   @media (max-width: 768px) {
-    font-size: 2rem;
+    font-size: 2.8rem;
   }
 `;
 
 const ProfileSubtitle = styled.p`
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.8);
+  font-family: 'Spline Sans Mono', monospace;
+  font-size: 1.3rem;
+  color: #a78bfa;
   font-weight: 400;
+  font-style: italic;
+  opacity: 0.7;
+  letter-spacing: 0.05em;
 `;
 
 const ProfileCard = styled(motion.div)`
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  padding: 2.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 24px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  max-width: 800px;
+  background: rgba(26, 11, 46, 0.16);
+  backdrop-filter: blur(25px);
+  padding: 3rem;
+  border: 2px solid rgba(138, 92, 246, 0);
+  border-radius: 25px;
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.15), inset 0 0 20px rgba(0, 0, 0, 0.4);
+  max-width: 900px;
   width: 100%;
   z-index: 2;
-  animation: ${float} 6s ease-in-out infinite;
+  animation: ${gentleGlow} 5s ease-in-out infinite;
+
+  @media (max-width: 768px) {
+    padding: 2.5rem;
+  }
 `;
 
 const ProfileGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2.5rem;
+  margin-bottom: 3rem;
 `;
 
 const ProfileSection = styled(motion.div)`
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  padding: 1.5rem;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(15px);
+  padding: 2rem;
+  border-radius: 20px;
+  border: 2px solid rgba(139, 92, 246, 0.3);
   transition: all 0.3s ease;
   
   &:hover {
-    transform: translateY(-4px);
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: #8b5cf6;
+    background: rgba(26, 11, 46, 0.9);
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
   }
 `;
 
 const SectionTitle = styled.h2`
-  font-family: 'Inter', sans-serif;
+  font-family: 'Spline Sans Mono', monospace;
   font-weight: 600;
-  font-size: 1.3rem;
-  color: #ffffff;
-  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  color: #ddd6fe;
+  margin-bottom: 1.2rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  letter-spacing: 0.02em;
 `;
 
 const SectionIcon = styled.div`
-  width: 24px;
-  height: 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #c084fc 100%);
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  animation: ${pulse} 2s ease-in-out infinite;
+  font-size: 14px;
+  animation: ${subtleFlicker} 3s ease-in-out infinite;
 `;
 
 const SectionContent = styled.div`
-  font-family: 'Inter', sans-serif;
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.9);
-  line-height: 1.6;
+  font-family: 'Spline Sans Mono', monospace;
+  font-size: 1.1rem;
+  color: #ddd6fe;
+  line-height: 1.7;
+  opacity: 0.85;
+  letter-spacing: 0.05em;
 `;
 
 const TraitsList = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
 `;
 
 const TraitTag = styled.span`
-  background: rgba(255, 255, 255, 0.1);
-  padding: 0.4rem 0.8rem;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.7);
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  color: #ddd6fe;
+  font-family: 'Spline Sans Mono', monospace;
   transition: all 0.3s ease;
+  letter-spacing: 0.05em;
   
   &:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-1px);
+    background: rgba(26, 11, 46, 0.9);
+    border-color: #8b5cf6;
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
   }
 `;
 
 const MessageSection = styled(motion.div)`
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-  backdrop-filter: blur(15px);
-  padding: 2rem;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(26, 11, 46, 0.85);
+  backdrop-filter: blur(20px);
+  padding: 2.5rem;
+  border-radius: 25px;
+  border: 2px solid rgba(139, 92, 246, 0.25);
   text-align: center;
-  margin-top: 2rem;
+  margin-top: 3rem;
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.15);
+  animation: ${gentleGlow} 5s ease-in-out infinite;
 `;
 
 const MessageText = styled.p`
-  font-family: 'Inter', sans-serif;
-  font-size: 1.2rem;
-  color: #ffffff;
+  font-family: 'Spline Sans Mono', monospace;
+  font-size: 1.3rem;
+  color: #ddd6fe;
   font-weight: 500;
-  line-height: 1.7;
+  line-height: 1.8;
   font-style: italic;
+  opacity: 0.85;
+  letter-spacing: 0.05em;
 `;
 
 const ZodiacIcon = styled.div`
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+  font-size: 2.2rem;
+  margin-bottom: 0.75rem;
+  color: #a78bfa;
+  animation: ${subtleFlicker} 3s ease-in-out infinite;
+`;
+
+const ForecastButton = styled(motion.button)`
+  margin-top: 2rem;
+  padding: 1.2rem 3rem;
+  font-size: 1.2rem;
+  font-family: 'Spline Sans Mono', monospace;
+  font-weight: 500;
+  background: linear-gradient(135deg, #6b21a8 0%, #8b5cf6 50%, #a855f7 100%);
+  border: 2px solid rgba(139, 92, 246, 0.5);
+  border-radius: 12px;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  transition: all 0.4s ease;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  z-index: 2;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(139, 92, 246, 0.6);
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #c084fc 100%);
+    animation: ${gentleGlow} 0.5s ease-in-out;
+  }
+
+  &::before {
+    content: '🌌';
+    font-size: 18px;
+    animation: ${subtleFlicker} 2s ease-in-out infinite;
+  }
 `;
 
 const Profile = () => {
   const { state } = useLocation();
   const { name, birthDate } = state || { name: 'Пользователь', birthDate: 'Неизвестно' };
+  const navigate = useNavigate();
 
-  // Заглушка астрологических данных
   const astroProfile = {
     zodiac: 'Лев ♌',
     element: 'Огонь 🔥',
@@ -218,39 +330,46 @@ const Profile = () => {
     birthstone: 'Рубин 💎',
   };
 
+  const handleForecastClick = () => {
+    navigate('/info', { state: { name, birthDate, zodiac: astroProfile.zodiac } });
+  };
+
   return (
     <ProfileContainer
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 1 }}
+      transition={{ duration: 1.2 }}
     >
-      <StarField>
-        <div className="star"></div>
-        <div className="star"></div>
-        <div className="star"></div>
-        <div className="star"></div>
-        <div className="star"></div>
-        <div className="star"></div>
-      </StarField>
+      <MysticalBackground>
+        <div className="smoke"></div>
+        <div className="smoke"></div>
+        <div className="smoke"></div>
+        <div className="smoke"></div>
+        <div className="candle"></div>
+        <div className="candle"></div>
+      </MysticalBackground>
+
+      <RunicCircle />
 
       <ProfileHeader
-        initial={{ y: -30, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8 }}
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
       >
         <ProfileTitle>Добро пожаловать, {name}!</ProfileTitle>
-        <ProfileSubtitle>Ваш космический профиль готов</ProfileSubtitle>
+        <ProfileSubtitle>Ваш космический профиль</ProfileSubtitle>
       </ProfileHeader>
 
       <ProfileCard
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.3 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.4 }}
       >
         <ProfileGrid>
           <ProfileSection
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
           >
             <SectionTitle>
               <SectionIcon>♌</SectionIcon>
@@ -263,8 +382,9 @@ const Profile = () => {
           </ProfileSection>
 
           <ProfileSection
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.7 }}
           >
             <SectionTitle>
               <SectionIcon>🔥</SectionIcon>
@@ -278,8 +398,9 @@ const Profile = () => {
           </ProfileSection>
 
           <ProfileSection
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.8 }}
           >
             <SectionTitle>
               <SectionIcon>⭐</SectionIcon>
@@ -295,8 +416,9 @@ const Profile = () => {
           </ProfileSection>
 
           <ProfileSection
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.9 }}
           >
             <SectionTitle>
               <SectionIcon>⚠️</SectionIcon>
@@ -312,8 +434,9 @@ const Profile = () => {
           </ProfileSection>
 
           <ProfileSection
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 1.0 }}
           >
             <SectionTitle>
               <SectionIcon>💕</SectionIcon>
@@ -326,8 +449,9 @@ const Profile = () => {
           </ProfileSection>
 
           <ProfileSection
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 1.1 }}
           >
             <SectionTitle>
               <SectionIcon>🍀</SectionIcon>
@@ -344,19 +468,27 @@ const Profile = () => {
         </ProfileGrid>
 
         <MessageSection
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.2 }}
         >
-          <SectionTitle style={{ justifyContent: 'center', marginBottom: '1rem' }}>
+          <SectionTitle style={{ justifyContent: 'center', marginBottom: '1.2rem' }}>
             <SectionIcon>🌟</SectionIcon>
             Послание звезд
           </SectionTitle>
           <MessageText>{astroProfile.starMessage}</MessageText>
         </MessageSection>
+
+        <ForecastButton
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+          onClick={handleForecastClick}
+        >
+          Узнать прогноз звезд
+        </ForecastButton>
       </ProfileCard>
     </ProfileContainer>
   );
 };
 
-export default Profile;
+export default Profile; 
