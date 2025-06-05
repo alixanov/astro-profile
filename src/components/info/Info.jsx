@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
 
@@ -163,6 +163,47 @@ const ForecastCard = styled(motion.div)`
   }
 `;
 
+const DayGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(5, 1fr);
+  }
+`;
+
+const DayCell = styled(motion.div)`
+  background: ${props => {
+    if (props.isLucky) return 'rgba(22, 163, 74, 0.3)';
+    if (props.isUnlucky) return 'rgba(220, 38, 38, 0.3)';
+    return 'rgba(0, 0, 0, 0.65)';
+  }};
+  border: 1px solid ${props => {
+    if (props.isLucky) return '#16a34a';
+    if (props.isUnlucky) return '#dc2626';
+    return 'rgba(139, 92, 246, 0.3)';
+  }};
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  font-size: 1rem;
+  color: #ddd6fe;
+  font-family: 'Spline Sans Mono', monospace;
+  transition: all 0.3s ease;
+  cursor: default;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px ${props => {
+    if (props.isLucky) return 'rgba(22, 163, 74, 0.5)';
+    if (props.isUnlucky) return 'rgba(220, 38, 38, 0.5)';
+    return 'rgba(139, 92, 246, 0.4)';
+  }};
+  }
+`;
+
 const ForecastSection = styled(motion.div)`
   background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(15px);
@@ -171,7 +212,7 @@ const ForecastSection = styled(motion.div)`
   border: 2px solid rgba(139, 92, 246, 0.3);
   margin-bottom: 2rem;
   transition: all 0.3s ease;
-  
+
   &:hover {
     border-color: #8b5cf6;
     background: rgba(26, 11, 46, 0.9);
@@ -217,19 +258,63 @@ const ForecastDate = styled.span`
   color: #c084fc;
 `;
 
+const BackButton = styled(motion.button)`
+  margin-top: 2rem;
+  padding: 1.2rem 3rem;
+  font-size: 1.2rem;
+  font-family: 'Spline Sans Mono', monospace;
+  font-weight: 500;
+  background: linear-gradient(135deg, #6b21a8 0%, #8b5cf6 50%, #a855f7 100%);
+  border: 2px solid rgba(139, 92, 246, 0.5);
+  border-radius: 12px;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  transition: all 0.4s ease;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  z-index: 2;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(139, 92, 246, 0.6);
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #c084fc 100%);
+    animation: ${gentleGlow} 0.5s ease-in-out;
+  }
+
+  &::before {
+    content: '←';
+    font-size: 18px;
+    animation: ${subtleFlicker} 2s ease-in-out infinite;
+  }
+`;
+
 const Info = () => {
   const { state } = useLocation();
-  const { name, zodiac } = state || { name: 'Пользователь', zodiac: 'Лев ♌' };
+  const { name, zodiac } = state || { name: 'User', zodiac: 'Leo ♌' };
+  const navigate = useNavigate();
+
+  const days = Array.from({ length: 31 }, (_, i) => i + 1);
+  const luckyDays = [11];
+  const unluckyDays = [2, 3];
 
   const forecast = {
     luckyDay: {
-      date: '12 июня 2025',
-      message: 'В этот день звезды сойдутся в твою пользу, о Лев! Солнце усилит твою харизму, открывая двери к новым возможностям. Смело бери инициативу и сияй в центре внимания.',
+      date: 'July 11, 2025',
+      message: 'On this day, Venus forms a harmonious trine with Jupiter, amplifying your charisma and luck, oh Leo. The stars whisper of opportunities in love and creativity. Act boldly, and the cosmos will support you!',
     },
-    unluckyDay: {
-      date: '3 июля 2025',
-      message: 'Луна в этот день создаст тень сомнений. Избегай поспешных решений и конфликтов, о Лев. Сохраняй спокойствие и доверься своей внутренней силе, чтобы пройти через бурю.',
+    unluckyDays: {
+      date: 'July 2–3, 2025',
+      message: 'Mercury retrograde stirs chaos in communication, while a tense Mars-Saturn aspect adds obstacles. Avoid major decisions and stay calm to navigate this cosmic turbulence.',
     },
+  };
+
+  const handleBackClick = () => {
+    navigate('/profile', { state: { name, zodiac } });
   };
 
   return (
@@ -254,8 +339,8 @@ const Info = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
       >
-        <InfoTitle>Прогноз звезд, {name}</InfoTitle>
-        <InfoSubtitle>Твоя судьба раскрывается, {zodiac}</InfoSubtitle>
+        <InfoTitle>Forecast for July 2025, {name}</InfoTitle>
+        <InfoSubtitle>The Cosmos Unveils Your Fate, {zodiac}</InfoSubtitle>
       </InfoHeader>
 
       <ForecastCard
@@ -269,8 +354,32 @@ const Info = () => {
           transition={{ duration: 0.5, delay: 0.6 }}
         >
           <ForecastTitle>
+            <ForecastIcon>📅</ForecastIcon>
+            Calendar of Fate
+          </ForecastTitle>
+          <DayGrid>
+            {days.map(day => (
+              <DayCell
+                key={day}
+                isLucky={luckyDays.includes(day)}
+                isUnlucky={unluckyDays.includes(day)}
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 0.3 }}
+              >
+                {day}
+              </DayCell>
+            ))}
+          </DayGrid>
+        </ForecastSection>
+
+        <ForecastSection
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+        >
+          <ForecastTitle>
             <ForecastIcon>🌞</ForecastIcon>
-            Удачный день
+            Lucky Day
           </ForecastTitle>
           <ForecastContent>
             <ForecastDate>{forecast.luckyDay.date}</ForecastDate>: {forecast.luckyDay.message}
@@ -280,17 +389,25 @@ const Info = () => {
         <ForecastSection
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.8 }}
+          transition={{ duration: 0.5, delay: 1.0 }}
         >
           <ForecastTitle>
             <ForecastIcon>🌑</ForecastIcon>
-            Неудачный день
+            Unlucky Days
           </ForecastTitle>
           <ForecastContent>
-            <ForecastDate>{forecast.unluckyDay.date}</ForecastDate>: {forecast.unluckyDay.message}
+            <ForecastDate>{forecast.unluckyDays.date}</ForecastDate>: {forecast.unluckyDays.message}
           </ForecastContent>
         </ForecastSection>
       </ForecastCard>
+
+      <BackButton
+        whileHover={{ scale: 1.03 }}
+        whileTap={{ scale: 0.97 }}
+        onClick={handleBackClick}
+      >
+        Return to Profile
+      </BackButton>
     </InfoContainer>
   );
 };

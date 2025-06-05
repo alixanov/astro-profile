@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
 
-// Subtle Animations
+// Animations
 const gentleGlow = keyframes`
   0%, 100% { filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.3)); }
   50% { filter: drop-shadow(0 0 15px rgba(192, 132, 252, 0.5)); }
@@ -22,6 +22,16 @@ const candleFlicker = keyframes`
 const runicGlow = keyframes`
   0%, 100% { text-shadow: 0 0 5px #8b5cf6, 0 0 10px #8b5cf6; }
   50% { text-shadow: 0 0 8px #c084fc, 0 0 15px #c084fc; }
+`;
+
+const mysticalPulse = keyframes`
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px #8b5cf6); }
+  50% { transform: scale(1.05); filter: drop-shadow(0 0 20px #c084fc); }
+`;
+
+const celestialFade = keyframes`
+  0% { opacity: 0; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
 `;
 
 const ProfileContainer = styled(motion.div)`
@@ -44,7 +54,7 @@ const MysticalBackground = styled.div`
   width: 100%;
   height: 100%;
   z-index: 1;
-  
+
   .smoke {
     position: absolute;
     width: 50px;
@@ -53,13 +63,13 @@ const MysticalBackground = styled.div`
     border-radius: 50%;
     filter: blur(15px);
     opacity: 0.4;
-    
+
     &:nth-child(1) { left: 15%; top: 20%; }
     &:nth-child(2) { left: 30%; top: 60%; }
     &:nth-child(3) { left: 70%; top: 30%; }
     &:nth-child(4) { left: 85%; top: 80%; }
   }
-  
+
   .candle {
     position: absolute;
     bottom: 15%;
@@ -68,7 +78,7 @@ const MysticalBackground = styled.div`
     background: linear-gradient(to top, #fbbf24, #f59e0b);
     animation: ${candleFlicker} 3s ease-in-out infinite;
     filter: blur(1px);
-    
+
     &:nth-child(5) { left: 10%; }
     &:nth-child(6) { right: 10%; }
   }
@@ -84,10 +94,10 @@ const RunicCircle = styled.div`
   border: 2px solid rgba(139, 92, 246, 0.2);
   border-radius: 50%;
   z-index: 1;
-  animation: ${gentleGlow} 5s ease-in-out infinite;
-  
+  animation: ${mysticalPulse} 5s ease-in-out infinite;
+
   &::before {
-    content: '⚹ ☽ ⚹ ☾ ⚹ ☽ ⚹ ☾';
+    content: '⚹ ☽ ⚹ ☾ ⚹ ☽ ⚹ ☾ ⚹';
     position: absolute;
     top: -15px;
     left: 0;
@@ -96,9 +106,9 @@ const RunicCircle = styled.div`
     font-size: 16px;
     color: #8b5cf6;
     animation: ${subtleFlicker} 4s ease-in-out infinite;
-    letter-spacing: 30px;
+    letter-spacing: 25px;
   }
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -147,16 +157,16 @@ const ProfileSubtitle = styled.p`
 `;
 
 const ProfileCard = styled(motion.div)`
-  background: rgba(26, 11, 46, 0.16);
-  backdrop-filter: blur(25px);
+  background: linear-gradient(rgba(26, 11, 46, 0.9), rgba(10, 10, 10, 0.9));
+  backdrop-filter: blur(15px);
   padding: 3rem;
-  border: 2px solid rgba(138, 92, 246, 0);
+  border: 3px solid #d4b4fc;
   border-radius: 25px;
-  box-shadow: 0 0 40px rgba(139, 92, 246, 0.15), inset 0 0 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.25);
   max-width: 900px;
   width: 100%;
   z-index: 2;
-  animation: ${gentleGlow} 5s ease-in-out infinite;
+  animation: ${celestialFade} 1s ease-out;
 
   @media (max-width: 768px) {
     padding: 2.5rem;
@@ -171,13 +181,13 @@ const ProfileGrid = styled.div`
 `;
 
 const ProfileSection = styled(motion.div)`
-  background: rgba(0, 0, 0, 0);
+  background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(15px);
   padding: 2rem;
   border-radius: 20px;
   border: 2px solid rgba(139, 92, 246, 0.3);
   transition: all 0.3s ease;
-  
+
   &:hover {
     border-color: #8b5cf6;
     background: rgba(26, 11, 46, 0.9);
@@ -235,7 +245,7 @@ const TraitTag = styled.span`
   font-family: 'Spline Sans Mono', monospace;
   transition: all 0.3s ease;
   letter-spacing: 0.05em;
-  
+
   &:hover {
     background: rgba(26, 11, 46, 0.9);
     border-color: #8b5cf6;
@@ -244,11 +254,11 @@ const TraitTag = styled.span`
 `;
 
 const MessageSection = styled(motion.div)`
-  background: rgba(26, 11, 46, 0.85);
-  backdrop-filter: blur(20px);
+  background: linear-gradient(rgba(26, 11, 46, 0.9), rgba(10, 10, 10, 0.9));
+  backdrop-filter: blur(8px);
   padding: 2.5rem;
+  border: 3px solid rgba(139, 212, 255, 0.25);
   border-radius: 25px;
-  border: 2px solid rgba(139, 92, 246, 0.25);
   text-align: center;
   margin-top: 3rem;
   box-shadow: 0 0 40px rgba(139, 92, 246, 0.15);
@@ -266,7 +276,7 @@ const MessageText = styled.p`
   letter-spacing: 0.05em;
 `;
 
-const ZodiacIcon = styled.div`
+const ZodiacIcon = styled(motion.div)`
   font-size: 2.2rem;
   margin-bottom: 0.75rem;
   color: #a78bfa;
@@ -279,7 +289,7 @@ const ForecastButton = styled(motion.button)`
   font-size: 1.2rem;
   font-family: 'Spline Sans Mono', monospace;
   font-weight: 500;
-  background: linear-gradient(135deg, #6b21a8 0%, #8b5cf6 50%, #a855f7 100%);
+  background: linear-gradient(135deg, #6b21a8, #8b5cf6, #a855f7);
   border: 2px solid rgba(139, 92, 246, 0.5);
   border-radius: 12px;
   color: #ffffff;
@@ -297,41 +307,80 @@ const ForecastButton = styled(motion.button)`
   &:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 30px rgba(139, 92, 246, 0.6);
-    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #c084fc 100%);
-    animation: ${gentleGlow} 0.5s ease-in-out;
+    background: linear-gradient(135deg, #7c3aed, #a855f7, #c084fc);
   }
 
   &::before {
-    content: '🌌';
+    content: '☾';
     font-size: 18px;
     animation: ${subtleFlicker} 2s ease-in-out infinite;
   }
 `;
 
+const getZodiac = (birthDate) => {
+  if (!birthDate || isNaN(new Date(birthDate).getTime())) {
+    return {
+      sign: 'Unknown',
+      emoji: '❓',
+      element: 'Unknown',
+      planet: 'Unknown',
+      birthstone: 'Unknown',
+      strengths: [],
+      weaknesses: [],
+      compatibility: { high: [], low: [] },
+      starMessage: 'The stars conceal your fate...',
+      luckyNumbers: [],
+    };
+  }
+
+  const date = new Date(birthDate);
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+
+  let zodiacData = {
+    sign: 'Leo',
+    emoji: '♌',
+    element: 'Fire 🔥',
+    planet: 'Sun ☀️',
+    birthstone: 'Ruby 💎',
+    strengths: ['Confident', 'Ambitious', 'Generous', 'Creative'],
+    weaknesses: ['Proud', 'Stubborn', 'Dramatic'],
+    compatibility: {
+      high: ['Aries', 'Sagittarius', 'Gemini'],
+      low: ['Taurus', 'Scorpio', 'Aquarius'],
+    },
+    starMessage: 'Your inner strength shines brighter than the stars. Lead others with your example and embrace the spotlight.',
+    luckyNumbers: [1, 8, 10, 19],
+  };
+
+  // Simplified zodiac calculation
+  if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) {
+    zodiacData = { ...zodiacData, sign: 'Aries', emoji: '♈', starMessage: 'Your energy ignites new paths.' };
+  } else if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) {
+    zodiacData = { ...zodiacData }; // Leo (default above)
+  } // Add other signs as needed
+
+  return zodiacData;
+};
+
 const Profile = () => {
   const { state } = useLocation();
-  const { name, birthDate } = state || { name: 'Пользователь', birthDate: 'Неизвестно' };
+  const { name = 'User', birthDate = null } = state || {};
   const navigate = useNavigate();
 
-  const astroProfile = {
-    zodiac: 'Лев ♌',
-    element: 'Огонь 🔥',
-    planet: 'Солнце ☀️',
-    traits: {
-      strengths: ['Уверенный', 'Амбициозный', 'Щедрый', 'Творческий'],
-      weaknesses: ['Гордый', 'Упрямый', 'Драматичный'],
-    },
-    compatibility: {
-      high: ['Овен', 'Стрелец', 'Близнецы'],
-      low: ['Телец', 'Скорпион', 'Водолей'],
-    },
-    starMessage: 'Твоя внутренняя сила сияет ярче звезд. Веди за собой других своим примером и не бойся быть в центре внимания.',
-    luckyNumbers: [1, 8, 10, 19],
-    birthstone: 'Рубин 💎',
+  const astroProfile = getZodiac(birthDate);
+
+  const formatDate = (date) => {
+    if (!date || isNaN(new Date(date).getTime())) return 'Unknown';
+    return new Date(date).toLocaleDateString('en-US', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
   };
 
   const handleForecastClick = () => {
-    navigate('/info', { state: { name, birthDate, zodiac: astroProfile.zodiac } });
+    navigate('/info', { state: { name, birthDate, zodiac: astroProfile.sign } });
   };
 
   return (
@@ -356,8 +405,8 @@ const Profile = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
       >
-        <ProfileTitle>Добро пожаловать, {name}!</ProfileTitle>
-        <ProfileSubtitle>Ваш космический профиль</ProfileSubtitle>
+        <ProfileTitle>Welcome, {name}!</ProfileTitle>
+        <ProfileSubtitle>Your Cosmic Profile</ProfileSubtitle>
       </ProfileHeader>
 
       <ProfileCard
@@ -372,12 +421,12 @@ const Profile = () => {
             transition={{ duration: 0.5, delay: 0.6 }}
           >
             <SectionTitle>
-              <SectionIcon>♌</SectionIcon>
-              Знак зодиака
+              <SectionIcon>{astroProfile.emoji}</SectionIcon>
+              Zodiac Sign
             </SectionTitle>
             <SectionContent>
-              <ZodiacIcon>{astroProfile.zodiac}</ZodiacIcon>
-              Дата рождения: {new Date(birthDate).toLocaleDateString('ru-RU')}
+              <ZodiacIcon>{astroProfile.sign}</ZodiacIcon>
+              Birth Date: {formatDate(birthDate)}
             </SectionContent>
           </ProfileSection>
 
@@ -388,12 +437,12 @@ const Profile = () => {
           >
             <SectionTitle>
               <SectionIcon>🔥</SectionIcon>
-              Стихия и планета
+              Element & Planet
             </SectionTitle>
             <SectionContent>
-              <div>Стихия: {astroProfile.element}</div>
-              <div>Планета-покровитель: {astroProfile.planet}</div>
-              <div>Камень: {astroProfile.birthstone}</div>
+              <div>Element: {astroProfile.element}</div>
+              <div>Ruling Planet: {astroProfile.planet}</div>
+              <div>Birthstone: {astroProfile.birthstone}</div>
             </SectionContent>
           </ProfileSection>
 
@@ -404,11 +453,11 @@ const Profile = () => {
           >
             <SectionTitle>
               <SectionIcon>⭐</SectionIcon>
-              Сильные стороны
+              Strengths
             </SectionTitle>
             <SectionContent>
               <TraitsList>
-                {astroProfile.traits.strengths.map((trait, index) => (
+                {astroProfile.strengths.map((trait, index) => (
                   <TraitTag key={index}>{trait}</TraitTag>
                 ))}
               </TraitsList>
@@ -422,11 +471,11 @@ const Profile = () => {
           >
             <SectionTitle>
               <SectionIcon>⚠️</SectionIcon>
-              Области для роста
+              Areas for Growth
             </SectionTitle>
             <SectionContent>
               <TraitsList>
-                {astroProfile.traits.weaknesses.map((trait, index) => (
+                {astroProfile.weaknesses.map((trait, index) => (
                   <TraitTag key={index}>{trait}</TraitTag>
                 ))}
               </TraitsList>
@@ -440,11 +489,11 @@ const Profile = () => {
           >
             <SectionTitle>
               <SectionIcon>💕</SectionIcon>
-              Совместимость
+              Compatibility
             </SectionTitle>
             <SectionContent>
-              <div><strong>Высокая:</strong> {astroProfile.compatibility.high.join(', ')}</div>
-              <div><strong>Сложная:</strong> {astroProfile.compatibility.low.join(', ')}</div>
+              <div><strong>High:</strong> {astroProfile.compatibility.high.join(', ')}</div>
+              <div><strong>Low:</strong> {astroProfile.compatibility.low.join(', ')}</div>
             </SectionContent>
           </ProfileSection>
 
@@ -455,7 +504,7 @@ const Profile = () => {
           >
             <SectionTitle>
               <SectionIcon>🍀</SectionIcon>
-              Счастливые числа
+              Lucky Numbers
             </SectionTitle>
             <SectionContent>
               <TraitsList>
@@ -474,7 +523,7 @@ const Profile = () => {
         >
           <SectionTitle style={{ justifyContent: 'center', marginBottom: '1.2rem' }}>
             <SectionIcon>🌟</SectionIcon>
-            Послание звезд
+            Message from the Stars
           </SectionTitle>
           <MessageText>{astroProfile.starMessage}</MessageText>
         </MessageSection>
@@ -484,11 +533,11 @@ const Profile = () => {
           whileTap={{ scale: 0.97 }}
           onClick={handleForecastClick}
         >
-          Узнать прогноз звезд
+          Discover Your Star Forecast
         </ForecastButton>
       </ProfileCard>
     </ProfileContainer>
   );
 };
 
-export default Profile; 
+export default Profile;
