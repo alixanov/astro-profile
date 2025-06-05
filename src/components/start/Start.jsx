@@ -388,13 +388,15 @@ const Start = () => {
                         }}
                         onClick={() => setShowCalendar(false)}
                       />
+
+                      
                       <motion.div
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.8 }}
                         style={{
                           position: 'fixed',
-                          top: '-10%',
+                          top: '-30%',
                           left: '70%',
                           transform: 'translate(-50%, -50%)',
                           background: 'rgba(26, 11, 46, 0.95)',
