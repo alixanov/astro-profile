@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import styled, { keyframes } from 'styled-components';
+import XIcon from '@mui/icons-material/X';
 
 // Animations
 const float = keyframes`
@@ -100,7 +101,7 @@ const Container = styled(motion.div)`
   background: radial-gradient(ellipse at center, #1e0b3a 0%, #0a001a 100%);
   overflow: hidden;
   position: relative;
-    font-family: 'Spline Sans Mono', monospace;
+  font-family: 'Spline Sans Mono', monospace;
   color: #e0d7ff;
 
   @media (max-width: 767px) {
@@ -238,7 +239,7 @@ const Title = styled(motion.h1)`
 `;
 
 const Subtitle = styled(motion.p)`
-    font-family: 'Spline Sans Mono', monospace;
+  font-family: 'Spline Sans Mono', monospace;
   font-size: 1.3rem;
   font-weight: 400;
   color: #c084fc;
@@ -327,7 +328,7 @@ const InputWrapper = styled.div`
 const Input = styled.input`
   padding: 1.3rem 2rem;
   font-size: 1.2rem;
-    font-family: 'Spline Sans Mono', monospace;
+  font-family: 'Spline Sans Mono', monospace;
   font-weight: 400;
   border: 2px solid rgba(168, 85, 247, 0.5);
   border-radius: 15px;
@@ -385,8 +386,8 @@ const CalendarModal = styled(motion.div)`
     width: 90vw;
     max-width: 280px;
     padding: 0.8rem;
-      top: 35%;
-  left: 15%;
+    top: 35%;
+    left: 50%;
   }
 `;
 
@@ -477,7 +478,7 @@ const CloseButton = styled(motion.button)`
 const ErrorMessage = styled(motion.p)`
   color: #f87171;
   font-size: 1.1rem;
-    font-family: 'Spline Sans Mono', monospace;
+  font-family: 'Spline Sans Mono', monospace;
   font-weight: 400;
   text-align: center;
   margin: 1.2rem 0 0 0;
@@ -497,10 +498,9 @@ const ErrorMessage = styled(motion.p)`
 const SubmitButton = styled(motion.button)`
   margin-top: 2rem;
   padding: 1.3rem 2.5rem;
-    height: 65px;
-
+  height: 65px;
   font-size: 1.3rem;
-    font-family: 'Spline Sans Mono', monospace;
+  font-family: 'Spline Sans Mono', monospace;
   font-weight: 600;
   background: linear-gradient(135deg, #6d238a 0%, #a855f7 50%, #c084fc 100%);
   border: 2px solid rgba(168, 85, 247, 0.5);
@@ -543,8 +543,51 @@ const SubmitButton = styled(motion.button)`
     padding: 1rem 2rem;
     font-size: 1.1rem;
     margin-top: 1.5rem;
-        height: 45px;
+    height: 45px;
+  }
+`;
 
+const FollowButton = styled(motion.a)`
+  margin-top: 2rem;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-family: 'Spline Sans Mono', monospace;
+  font-weight: 400;
+  background: linear-gradient(135deg, #6d238a 0%, #a855f7 50%, #c084fc 100%);
+  border: 2px solid rgba(168, 85, 247, 0.5);
+  border-radius: 15px;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.5s ease;
+  box-shadow: 0 5px 20px rgba(168, 85, 247, 0.5);
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  z-index: 2;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 40px rgba(168, 85, 247, 0.7);
+    background: linear-gradient(135deg, #a855f7 0%, #c084fc 50%, #e0d7ff 100%);
+    animation: ${mysticalPulse} 0.6s ease-in-out;
+  }
+
+  svg {
+    animation: ${ghostlyFlicker} 1.8s ease-in-out infinite;
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 767px) {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    margin-top: 1.5rem;
+
+    svg {
+      font-size: 1rem;
+    }
   }
 `;
 
@@ -678,7 +721,7 @@ const ZodiacSymbol = styled.div`
 `;
 
 const LoadingTitle = styled(motion.h2)`
-    font-family: 'Spline Sans Mono', monospace;
+  font-family: 'Spline Sans Mono', monospace;
   font-size: 2.5rem;
   color: #e0d7ff;
   text-align: center;
@@ -693,7 +736,7 @@ const LoadingTitle = styled(motion.h2)`
 `;
 
 const LoadingSubtitle = styled(motion.p)`
-    font-family: 'Spline Sans Mono', monospace;
+  font-family: 'Spline Sans Mono', monospace;
   font-size: 1.4rem;
   font-weight: 300;
   color: #c084fc;
@@ -926,6 +969,18 @@ const Start = () => {
           </SubmitButton>
         </Form>
       </InputContainer>
+
+      <FollowButton
+        href="https://x.com/home"
+        target="_blank"
+        rel="noopener noreferrer"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        aria-label="Follow us on X"
+      >
+        <XIcon />
+        Follow Us
+      </FollowButton>
 
       <AnimatePresence>
         {showCalendar && (
