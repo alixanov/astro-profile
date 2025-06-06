@@ -257,6 +257,11 @@ const CalendarOverlay = styled(motion.div)`
   z-index: 999;
 `;
 
+
+
+
+
+
 const CalendarModal = styled(motion.div)`
   position: fixed;
   top: 40%;
@@ -276,7 +281,7 @@ const CalendarModal = styled(motion.div)`
     max-width: 280px;
     padding: 0.8rem;
     top: 35%;
-    left: 50%;
+    left: 15%;
   }
 `;
 
