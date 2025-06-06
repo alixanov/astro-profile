@@ -218,7 +218,7 @@ const RunicCircle = styled.div`
 `;
 
 const Title = styled(motion.h1)`
-  font-family: 'Roboto Mono', monospace;
+    font-family: 'Spline Sans Mono', monospace;
   font-weight: 700;
   font-size: 4.5rem;
   background: linear-gradient(to bottom, #e0d7ff 0%, #7c3aed 50%, #c084fc 100%);
@@ -369,8 +369,8 @@ const CalendarOverlay = styled(motion.div)`
 
 const CalendarModal = styled(motion.div)`
   position: fixed;
-  top: 50%;
-  left: 50%;
+  top: 40%;
+  left: 60%;
   transform: translate(-50%, -50%);
   background: rgba(30, 11, 58, 0.95);
   border: 1px solid rgba(168, 85, 247, 0.5);
