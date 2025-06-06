@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import styled, { keyframes } from 'styled-components';
+import gsap from 'gsap';
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import XIcon from '@mui/icons-material/X';
+import EffectVideo from "../../video/216794.mp4"; // Make sure this path is correct
+
+// Register GSAP plugin
+gsap.registerPlugin(MotionPathPlugin);
 
 // Animations
 const float = keyframes`
@@ -22,73 +28,9 @@ const mysticalPulse = keyframes`
   50% { transform: scale(1.05); filter: drop-shadow(0 0 20px #a855f7); }
 `;
 
-const runicGlow = keyframes`
-  0%, 100% { box-shadow: 0 0 10px rgba(124, 58, 237, 0.5); }
-  50% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.8); }
-`;
-
-const smokeRise = keyframes`
-  0% { transform: translateY(100px) scale(0.8); opacity: 0; }
-  50% { opacity: 0.4; }
-  100% { transform: translateY(-200px) scale(1.2); opacity: 0; }
-`;
-
-const candleFlame = keyframes`
-  0%, 100% { transform: scaleY(1) scaleX(1); }
-  25% { transform: scaleY(1.1) scaleX(0.9); }
-  50% { transform: scaleY(0.9) scaleX(1.1); }
-  75% { transform: scaleY(1.05) scaleX(0.95); }
-`;
-
-const starTwinkle = keyframes`
-  0%, 100% { opacity: 0.5; transform: scale(0.8); }
-  50% { opacity: 1; transform: scale(1.2); }
-`;
-
-const nebulaFlow = keyframes`
-  0% { transform: translateX(-100%) rotate(0deg); opacity: 0; }
-  50% { opacity: 0.8; }
-  100% { transform: translateX(100%) rotate(360deg); opacity: 0; }
-`;
-
-const planetOrbit = keyframes`
-  0% { transform: rotate(0deg) translateX(150px) rotate(0deg); }
-  100% { transform: rotate(360deg) translateX(150px) rotate(-360deg); }
-`;
-
-const shootingStar = keyframes`
-  0% { transform: translateX(-100vw) translateY(100vh) rotate(45deg); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: translateX(100vw) translateY(-100vh) rotate(45deg); opacity: 0; }
-`;
-
 const cosmicPulse = keyframes`
   0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px #4c1d95) drop-shadow(0 0 40px #7c3aed); }
   50% { transform: scale(1.2); filter: drop-shadow(0 0 40px #8b5cf6) drop-shadow(0 0 80px #c084fc); }
-`;
-
-const zodiacGlow = keyframes`
-  0%, 100% { opacity: 0.7; text-shadow: 0 0 5px #8b5cf6; }
-  50% { opacity: 1; text-shadow: 0 0 15px #c084fc; }
-`;
-
-const stardustSparkle = keyframes`
-  0% { transform: scale(0) translate(0, 0); opacity: 0; }
-  50% { opacity: 1; }
-  100% { transform: scale(1.3) translate(${Math.random() * 80 - 40}px, ${Math.random() * 80 - 40}px); opacity: 0; }
-`;
-
-const supernovaBurst = keyframes`
-  0% { transform: scale(1); opacity: 1; filter: brightness(1); }
-  50% { transform: scale(1.4); opacity: 0.9; filter: brightness(1.8); }
-  100% { transform: scale(1.8); opacity: 0; filter: brightness(0); }
-`;
-
-const constellationFade = keyframes`
-  0% { opacity: 0; transform: scale(0.9); }
-  50% { opacity: 0.5; transform: scale(1); }
-  100% { opacity: 0; transform: scale(1.1); }
 `;
 
 // Styled Components
@@ -98,7 +40,7 @@ const Container = styled(motion.div)`
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: radial-gradient(ellipse at center, #1e0b3a 0%, #0a001a 100%);
+  background: radial-gradient(ellipse at center, rgb(8, 1, 18) 0%, #0a001a 100%);
   overflow: hidden;
   position: relative;
   font-family: 'Spline Sans Mono', monospace;
@@ -116,50 +58,7 @@ const CosmicBackground = styled.div`
   width: 100%;
   height: 100%;
   z-index: 1;
-  background: radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.1) 0%, transparent 70%);
-`;
-
-const Constellation = styled.div`
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M10 90 L40 60 L90 80 L60 20 L20 50 Z" fill="none" stroke="rgba(168, 85, 247, 0.3)" stroke-width="1"/></svg>');
-  animation: ${constellationFade} 8s ease-in-out infinite;
-  opacity: 0.4;
-
-  @media (max-width: 767px) {
-    width: 60px;
-    height: 60px;
-  }
-`;
-
-const Smoke = styled.div`
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.3), transparent);
-  border-radius: 50%;
-  animation: ${smokeRise} 10s infinite linear;
-
-  @media (max-width: 767px) {
-    width: 30px;
-    height: 30px;
-  }
-`;
-
-const Candle = styled.div`
-  position: absolute;
-  bottom: 15%;
-  width: 3px;
-  height: 10px;
-  background: linear-gradient(to top, #f59e0b, #fef08a);
-  animation: ${candleFlame} 1.5s ease-in-out infinite;
-  filter: blur(0.7px);
-  box-shadow: 0 0 15px #f59e0b;
-
-  @media (max-width: 767px) {
-    height: 8px;
-  }
+  background: radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.2) 0%, transparent 70%);
 `;
 
 const RunicCircle = styled.div`
@@ -173,7 +72,7 @@ const RunicCircle = styled.div`
   border-radius: 50%;
   z-index: 1;
   animation: ${float} 10s ease-in-out infinite;
-  background: radial-gradient(circle, rgba(124, 58, 237, 0.1), transparent);
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.15), transparent);
 
   &::before {
     content: '☽ ✧ ⚸ ✧ ☾';
@@ -219,7 +118,7 @@ const RunicCircle = styled.div`
 `;
 
 const Title = styled(motion.h1)`
-    font-family: 'Spline Sans Mono', monospace;
+  font-family: 'Spline Sans Mono', monospace;
   font-weight: 700;
   font-size: 4.5rem;
   background: linear-gradient(to bottom, #e0d7ff 0%, #7c3aed 50%, #c084fc 100%);
@@ -296,16 +195,6 @@ const InputContainer = styled(motion.div)`
       top: -10px;
     }
   }
-`;
-
-const Stardust = styled.div`
-  position: absolute;
-  width: 3px;
-  height: 3px;
-  background: #e0d7ff;
-  border-radius: 50%;
-  animation: ${stardustSparkle} 2s ease-in-out infinite;
-  z-index: 1;
 `;
 
 const Form = styled.form`
@@ -591,178 +480,82 @@ const FollowButton = styled(motion.a)`
   }
 `;
 
-const LoadingScreen = styled(motion.div)`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(ellipse at center, #12022e 0%, #040010 100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  overflow: hidden;
-`;
-
-const Spiral = styled.div`
-  position: relative;
-  width: 350px;
-  height: 350px;
-  animation: ${cosmicPulse} 5s ease-in-out infinite;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.2), transparent);
-  border-radius: 50%;
-  transform: rotate(45deg);
-
-  @media (max-width: 767px) {
-    width: 250px;
-    height: 250px;
-  }
-`;
-
-const Star = styled.div`
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  background: #ffffff;
-  border-radius: 50%;
-  animation: ${starTwinkle} 2.5s ease-in-out infinite;
-  box-shadow: 0 0 10px currentColor;
-  z-index: 1;
-
-  @media (max-width: 767px) {
-    width: 3px;
-    height: 3px;
-  }
-`;
-
-const Nebula = styled.div`
-  position: absolute;
-  width: 450px;
-  height: 250px;
-  background: radial-gradient(ellipse, rgba(124, 58, 237, 0.5), transparent);
-  border-radius: 50%;
-  animation: ${nebulaFlow} 12s linear infinite;
-  filter: blur(25px);
-  z-index: 2;
-
-  @media (max-width: 767px) {
-    width: 300px;
-    height: 150px;
-  }
-`;
-
-const Planet = styled.div`
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  background: radial-gradient(circle at 30% 30%, #7c3aed, #4c1d95);
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  animation: ${planetOrbit} 10s linear infinite;
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.6);
-  z-index: 3;
-
-  @media (max-width: 767px) {
-    width: 30px;
-    height: 30px;
-  }
-`;
-
-const PlanetRing = styled.div`
-  position: absolute;
-  width: 60px;
-  height: 10px;
-  background: rgba(168, 85, 247, 0.3);
-  border-radius: 10px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(45deg);
-  box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
-
-  @media (max-width: 767px) {
-    width: 45px;
-    height: 8px;
-  }
-`;
-
-const ShootingStar = styled.div`
-  position: absolute;
-  width: 3px;
-  height: 80px;
-  background: linear-gradient(to bottom, transparent, #e0d7ff, transparent);
-  animation: ${shootingStar} 4s linear infinite;
-  filter: blur(0.7px);
-  z-index: 4;
-
-  @media (max-width: 767px) {
-    height: 60px;
-  }
-`;
-
-const ZodiacSymbol = styled.div`
-  position: absolute;
-  color: #c084fc;
-  font-size: 28px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(0deg) translateY(150px);
-  animation: ${zodiacGlow} 4s ease-in-out infinite;
-  text-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
-  z-index: 5;
-
-  @media (max-width: 767px) {
-    font-size: 20px;
-    transform: translate(-50%, -50%) rotate(0deg) translateY(100px);
-  }
-`;
-
 const LoadingTitle = styled(motion.h2)`
   font-family: 'Spline Sans Mono', monospace;
-  font-size: 2.5rem;
-  color: #e0d7ff;
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: rgb(22, 15, 47);
   text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  z-index: 6;
-  animation: ${mysticalPulse} 2.5s ease-in-out infinite;
+  z-index: 1002;
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 20px rgb(45, 22, 66), 0 0 40px rgb(52, 32, 71);
 
   @media (max-width: 767px) {
-    font-size: 1.8rem;
+    font-size: 2rem;
   }
 `;
 
 const LoadingSubtitle = styled(motion.p)`
   font-family: 'Spline Sans Mono', monospace;
-  font-size: 1.4rem;
-  font-weight: 300;
-  color: #c084fc;
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: rgb(22, 15, 47);
   text-align: center;
+  z-index: 1002;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   font-style: italic;
-  margin-top: 1.2rem;
-  opacity: 0.9;
-  letter-spacing: 0.1em;
-  z-index: 6;
-  text-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  text-shadow: 0 0 20px rgb(45, 22, 66), 0 0 40px rgb(52, 32, 71);
 
   @media (max-width: 767px) {
-    font-size: 1.1rem;
-    margin-top: 1rem;
+    font-size: 1.2rem;
   }
+`;
+
+const VideoOverlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+`;
+
+const StyledVideo = styled.video`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1000;
 `;
 
 const Start = () => {
   const [name, setName] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [showVideo, setShowVideo] = useState(false);
   const navigate = useNavigate();
+  const videoRef = useRef(null);
+  const timeoutRef = useRef(null);
+  const hasNavigatedRef = useRef(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -775,13 +568,46 @@ const Start = () => {
       return;
     }
     setError(null);
-    setIsLoading(true);
-
-    setTimeout(() => {
-      setIsLoading(false);
-      navigate('/profile', { state: { name, birthDate } });
-    }, 3000);
+    setShowVideo(true);
   };
+
+  useEffect(() => {
+    if (showVideo && videoRef.current && !hasNavigatedRef.current) {
+      videoRef.current.play().catch((err) => {
+        console.error('Video playback failed:', err);
+        // Fallback: navigate after 10 seconds even if playback fails
+      });
+
+      // Set timeout to navigate after 10 seconds
+      timeoutRef.current = setTimeout(() => {
+        if (!hasNavigatedRef.current) {
+          hasNavigatedRef.current = true;
+          setShowVideo(false);
+          navigate('/profile', { state: { name, birthDate } });
+        }
+      }, 10000);
+
+      // Handle video end
+      videoRef.current.onended = () => {
+        if (!hasNavigatedRef.current) {
+          hasNavigatedRef.current = true;
+          clearTimeout(timeoutRef.current); // Clear timeout if video ends early
+          setShowVideo(false);
+          navigate('/profile', { state: { name, birthDate } });
+        }
+      };
+    }
+
+    // Cleanup
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      if (videoRef.current) {
+        videoRef.current.onended = null; // Remove event listener
+      }
+    };
+  }, [showVideo, name, birthDate, navigate]);
 
   const generateCalendar = () => {
     const firstDay = new Date(currentYear, currentMonth, 1);
@@ -799,7 +625,6 @@ const Start = () => {
       }
       days.push(weekDays);
     }
-
     return days;
   };
 
@@ -843,31 +668,18 @@ const Start = () => {
 
   return (
     <Container>
-      <CosmicBackground>
+      <CosmicBackground id="cosmic-background">
         {[...Array(4)].map((_, i) => (
-          <Constellation
+          <div
             key={`constellation-${i}`}
             style={{
+              position: 'absolute',
+              width: '100px',
+              height: '100px',
+              background: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M10 90 L40 60 L90 80 L60 20 L20 50 Z" fill="none" stroke="rgba(168, 85, 247, 0.3)" stroke-width="1"/></svg>')`,
+              opacity: 0.4,
               top: `${Math.random() * 80}%`,
               left: `${Math.random() * 80}%`,
-              animationDelay: `${i * 1.5}s`,
-            }}
-          />
-        ))}
-        {[...Array(3)].map((_, i) => (
-          <Smoke
-            key={`smoke-${i}`}
-            style={{
-              left: `${10 + i * 20}%`,
-              animationDelay: `${i * 2}s`,
-            }}
-          />
-        ))}
-        {[...Array(3)].map((_, i) => (
-          <Candle
-            key={`candle-${i}`}
-            style={{
-              [i === 0 ? 'left' : i === 1 ? 'right' : 'left']: `${5 + i * 40}%`,
             }}
           />
         ))}
@@ -896,17 +708,6 @@ const Start = () => {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1, delay: 0.9 }}
       >
-        {[...Array(6)].map((_, i) => (
-          <Stardust
-            key={`stardust-${i}`}
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${i * 0.2}s`,
-            }}
-          />
-        ))}
-
         <Form onSubmit={handleSubmit}>
           <InputWrapper>
             <Input
@@ -945,22 +746,6 @@ const Start = () => {
             whileTap={{ scale: 0.95 }}
             type="submit"
             disabled={!name || !birthDate}
-            onClick={(e) => {
-              if (name && birthDate) {
-                const burst = document.createElement('div');
-                burst.style.position = 'absolute';
-                burst.style.width = '100px';
-                burst.style.height = '100px';
-                burst.style.background = 'radial-gradient(circle, rgba(224, 215, 255, 0.8), transparent)';
-                burst.style.borderRadius = '50%';
-                burst.style.top = '50%';
-                burst.style.left = '50%';
-                burst.style.transform = 'translate(-50%, -50%)';
-                burst.style.animation = 'supernovaBurst 1s ease-out';
-                e.target.appendChild(burst);
-                setTimeout(() => burst.remove(), 1000);
-              }
-            }}
             aria-label="Submit form"
           >
             <span>☽</span>
@@ -1057,71 +842,13 @@ const Start = () => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {isLoading && (
-          <LoadingScreen
+        {showVideo && (
+          <VideoOverlay
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <Spiral>
-              {[...Array(40)].map((_, i) => (
-                <Star
-                  key={`star-${i}`}
-                  style={{
-                    left: `${Math.random() * 100}%`,
-                    top: `${Math.random() * 100}%`,
-                    animationDelay: `${Math.random() * 2}s`,
-                    background: ['#ffffff', '#c084fc', '#a855f7', '#e0d7ff', '#7c3aed'][Math.floor(Math.random() * 5)],
-                  }}
-                />
-              ))}
-              {[...Array(3)].map((_, i) => (
-                <Nebula
-                  key={`nebula-${i}`}
-                  style={{
-                    animationDelay: `${i * 2.5}s`,
-                    top: `${15 + i * 25}%`,
-                    left: '-60%',
-                    background: `radial-gradient(ellipse, rgba(${124 + i * 30}, ${58 + i * 40}, ${237 - i * 30}, 0.5), transparent)`,
-                  }}
-                />
-              ))}
-              {[...Array(3)].map((_, i) => (
-                <Planet
-                  key={`planet-${i}`}
-                  style={{
-                    animationDelay: `${i * 1.5}s`,
-                    animationDuration: `${10 + i * 3}s`,
-                    background: `radial-gradient(circle at 30% 30%, #${i === 0 ? '7c3aed' : i === 1 ? 'c084fc' : 'e0d7ff'}, #${i === 0 ? '4c1d95' : i === 1 ? 'a855f7' : 'e0d7ff'})`,
-                  }}
-                >
-                  {i === 1 && <PlanetRing />}
-                </Planet>
-              ))}
-              {[...Array(3)].map((_, i) => (
-                <ShootingStar
-                  key={`shooting-star-${i}`}
-                  style={{
-                    animationDelay: `${i * 1.2}s`,
-                    animationDuration: `${Math.random() * 3 + 4}s`,
-                    top: `${Math.random() * 60}%`,
-                    left: `${Math.random() * 100}%`,
-                  }}
-                />
-              ))}
-              {['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓'].map((symbol, i) => (
-                <ZodiacSymbol
-                  key={`zodiac-${i}`}
-                  style={{
-                    transform: `translate(-50%, -50%) rotate(${i * 30}deg) translateY(150px) rotate(-${i * 30}deg)`,
-                    animationDelay: `${i * 0.3}s`,
-                  }}
-                >
-                  {symbol}
-                </ZodiacSymbol>
-              ))}
-            </Spiral>
-
+            <StyledVideo ref={videoRef} src={EffectVideo} autoPlay muted playsInline />
             <LoadingTitle
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
@@ -1129,7 +856,6 @@ const Start = () => {
             >
               Cosmic Journey
             </LoadingTitle>
-
             <LoadingSubtitle
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
@@ -1137,11 +863,13 @@ const Start = () => {
             >
               Your stellar path is being woven...
             </LoadingSubtitle>
-          </LoadingScreen>
+          </VideoOverlay>
         )}
       </AnimatePresence>
     </Container>
   );
 };
+
+
 
 export default Start;
