@@ -486,10 +486,9 @@ const TextContainer = styled(motion.div)`
   align-items: center;
   gap: 1rem;
   padding: 2rem 3rem;
-  background: rgba(30, 11, 58, 0.02);
+  background: rgba(30, 11, 58, 0);
   backdrop-filter: blur(10px);
   border-radius: 15px;
-  border: 1px solid rgba(168, 85, 247, 0.3);
   z-index: 1002;
   position: relative;
 
@@ -521,12 +520,11 @@ const LoadingTitle = styled(motion.h2)`
   font-family: 'Spline Sans Mono', monospace, monospace;
   font-size: 3.5rem;
   font-weight: 700;
-  background: linear-gradient(135deg,rgb(33, 23, 69),rgb(200, 140, 255),rgb(53, 17, 91));
+  background: linear-gradient(#0c1345,#0c1345,#0c1345);
   -webkit-background-clip: text;
   color: transparent;
   text-align: center;
   letter-spacing: 0.1em;
-  // text-shadow: 0 0 15px rgba(255, 255, 255, 0.29), 0 0 30px rgba(255, 255, 255, 0.39);
   animation: ${mysticalPulse} 4s ease-in-out infinite;
 
   @media (max-width: 767px) {
@@ -538,14 +536,13 @@ const LoadingSubtitle = styled(motion.p)`
   font-family: 'Spline Sans Mono', monospace, monospace;
   font-size: 1.8rem;
   font-weight: 400;
-  background: linear-gradient(135deg,rgb(151, 122, 255),rgb(200, 140, 255),rgb(53, 17, 91));
+background: linear-gradient(rgb(1, 6, 41), rgb(34, 50, 120));
   -webkit-background-clip: text;
   color: transparent;
   text-align: center;
   font-style: italic;
   letter-spacing: 0.08em;
   line-height: 1.5;
-  text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
   animation: ${ghostlyFlicker} 3s ease-in-out infinite;
 
   @media (max-width: 767px) {
