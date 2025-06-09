@@ -800,6 +800,7 @@ const Profile = () => {
             </SectionTitle>
             <SectionContent>
               <ZodiacIcon>{astroProfile.emoji}</ZodiacIcon>
+              {astroProfile.sign}<br />
               Birth Date: {formatDate(birthDate)}
             </SectionContent>
           </ProfileSection>

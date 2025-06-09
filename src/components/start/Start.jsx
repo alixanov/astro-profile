@@ -5,7 +5,7 @@ import styled, { keyframes } from 'styled-components';
 import gsap from 'gsap';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import XIcon from '@mui/icons-material/X';
-import EffectVideo from "../../video/216794.mp4"; // Make sure this path is correct
+import EffectVideo from "../../video/216794.mp4"; // Ensure this path is correct
 
 // Register GSAP plugin
 gsap.registerPlugin(MotionPathPlugin);
@@ -275,8 +275,8 @@ const CalendarModal = styled(motion.div)`
     width: 90vw;
     max-width: 280px;
     padding: 0.8rem;
-     top: 35%;
-  left: 15%;
+    top: 35%;
+    left: 15%;
   }
 `;
 
@@ -517,7 +517,7 @@ const TextContainer = styled(motion.div)`
 `;
 
 const LoadingTitle = styled(motion.h2)`
-  font-family: 'Spline Sans Mono', monospace, monospace;
+  font-family: 'Spline Sans Mono', monospace;
   font-size: 3.5rem;
   font-weight: 700;
   background: linear-gradient(#0c1345,#0c1345,#0c1345);
@@ -533,10 +533,10 @@ const LoadingTitle = styled(motion.h2)`
 `;
 
 const LoadingSubtitle = styled(motion.p)`
-  font-family: 'Spline Sans Mono', monospace, monospace;
+  font-family: 'Spline Sans Mono', monospace;
   font-size: 1.8rem;
   font-weight: 400;
-background: linear-gradient(rgb(1, 6, 41), rgb(34, 50, 120));
+  background: linear-gradient(rgb(1, 6, 41), rgb(34, 50, 120));
   -webkit-background-clip: text;
   color: transparent;
   text-align: center;
@@ -585,7 +585,6 @@ const Start = () => {
   const [showVideo, setShowVideo] = useState(false);
   const navigate = useNavigate();
   const videoRef = useRef(null);
-  const timeoutRef = useRef(null);
   const hasNavigatedRef = useRef(false);
 
   const handleSubmit = (e) => {
@@ -604,36 +603,37 @@ const Start = () => {
 
   useEffect(() => {
     if (showVideo && videoRef.current && !hasNavigatedRef.current) {
-      videoRef.current.play().catch((err) => {
-        console.error('Video playback failed:', err);
-      });
-
-      timeoutRef.current = setTimeout(() => {
+      const navigateToProfile = () => {
         if (!hasNavigatedRef.current) {
           hasNavigatedRef.current = true;
-          setShowVideo(false);
-          navigate('/profile', { state: { name, birthDate } });
-        }
-      }, 10000);
-
-      videoRef.current.onended = () => {
-        if (!hasNavigatedRef.current) {
-          hasNavigatedRef.current = true;
-          clearTimeout(timeoutRef.current);
           setShowVideo(false);
           navigate('/profile', { state: { name, birthDate } });
         }
       };
-    }
 
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      if (videoRef.current) {
-        videoRef.current.onended = null;
-      }
-    };
+      // Play the video
+      videoRef.current.play().catch((err) => {
+        console.error('Video playback failed:', err);
+        navigateToProfile(); // Fallback navigation if video fails
+      });
+
+      // Navigate when video ends
+      const handleVideoEnd = () => {
+        navigateToProfile();
+      };
+
+      // Ensure navigation after 5 seconds, regardless of video length
+      const timeoutId = setTimeout(navigateToProfile, 5000);
+
+      videoRef.current.addEventListener('ended', handleVideoEnd);
+
+      return () => {
+        if (videoRef.current) {
+          videoRef.current.removeEventListener('ended', handleVideoEnd);
+        }
+        clearTimeout(timeoutId); // Clean up timeout
+      };
+    }
   }, [showVideo, name, birthDate, navigate]);
 
   const generateCalendar = () => {
@@ -703,7 +703,7 @@ const Start = () => {
               position: 'absolute',
               width: '100px',
               height: '100px',
-              background: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M10 90 L40 60 L90 80 L60 20 L20 50 Z" fill="none" stroke="rgba(168, 85, 247, 0.3)" stroke-width="1"/></svg>')`,
+              background: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M10 90 L40 60 L90 80 L60 20 L20" fill="none" stroke="rgba(168, 85, 247, 0.3)" stroke-width="2"/></svg>')`,
               opacity: 0.4,
               top: `${Math.random() * 80}%`,
               left: `${Math.random() * 80}%`,
@@ -750,7 +750,7 @@ const Start = () => {
               type="text"
               value={birthDate ? formatDate(birthDate) : ''}
               onClick={() => setShowCalendar(!showCalendar)}
-              placeholder="Choose your birth date..."
+              placeholder="Choose your date of birth..."
               readOnly
               aria-label="Select your birth date"
             />
