@@ -249,7 +249,7 @@ const ProfileSection = styled(motion.div)`
   transition: all 0.3s ease;
 
   &:hover {
-isesti: 0.9;
+    opacity: 0.9;
     border-color: #8b5cf6;
     background: rgba(26, 11, 46, 0.8);
     box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
@@ -407,22 +407,22 @@ const ForecastButton = styled(motion.button)`
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  transition: all 0.3s ease;
+  transition: background 0.3s ease, border-color 0.3s ease;
   box-shadow: 0 3px 12px rgba(139, 92, 246, 0.3);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   z-index: 2;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5);
     background: linear-gradient(135deg, #7c3aed, #a855f7);
+    border-color: #a855f7;
+    box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5);
   }
 
-  &::before {
-    content: '☾ ';
-    font-size: 16px;
-    animation: ${subtleFlicker} 2s ease-in-out infinite;
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.5);
+    border-color: #a855f7;
   }
 
   @media (max-width: 767px) {
@@ -450,14 +450,20 @@ const HomeButton = styled(motion.button)`
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: background 0.3s ease, border-color 0.3s ease;
   box-shadow: 0 2px 8px rgba(139, 92, 246, 0.2);
   z-index: 3;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
     background: linear-gradient(135deg, #7c3aed, #a855f7);
+    border-color: #a855f7;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.5);
+    border-color: #a855f7;
   }
 
   @media (max-width: 767px) {
@@ -657,7 +663,7 @@ const Profile = () => {
 
   useEffect(() => {
     // GSAP Timeline for subtle cosmic unfold
-    const tl = gsap.timeline();
+    const tl = gsap.timeline({ overwrite: 'auto' });
 
     // Initial state for ProfileContainer
     gsap.set('.profile-container', {
@@ -748,7 +754,8 @@ const Profile = () => {
   };
 
   const handleForecastClick = () => {
-    navigate('/info', { state: { name, birthDate, zodiac: astroProfile.sign } });
+    const zodiacSign = astroProfile.sign || 'Unknown';
+    navigate('/info', { state: { name, birthDate, zodiac: zodiacSign } });
   };
 
   const handleHomeClick = () => {

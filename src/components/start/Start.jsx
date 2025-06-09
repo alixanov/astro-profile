@@ -257,15 +257,10 @@ const CalendarOverlay = styled(motion.div)`
   z-index: 999;
 `;
 
-
-
-
-
-
 const CalendarModal = styled(motion.div)`
   position: fixed;
   top: 40%;
-  left: 60%;
+  left: 50%;
   transform: translate(-50%, -50%);
   background: rgba(30, 11, 58, 0.95);
   border: 1px solid rgba(168, 85, 247, 0.5);
@@ -281,7 +276,6 @@ const CalendarModal = styled(motion.div)`
     max-width: 280px;
     padding: 0.8rem;
     top: 35%;
-    left: 15%;
   }
 `;
 
@@ -485,19 +479,54 @@ const FollowButton = styled(motion.a)`
   }
 `;
 
+const TextContainer = styled(motion.div)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 3rem;
+  background: rgba(30, 11, 58, 0.02);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  z-index: 1002;
+  position: relative;
+
+  &::before {
+    content: '✧ ☽ ✧';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 18px;
+    color: #a855f7;
+    animation: ${ghostlyFlicker} 2s ease-in-out infinite;
+    letter-spacing: 10px;
+  }
+
+  @media (max-width: 767px) {
+    padding: 1.5rem 2rem;
+    gap: 0.8rem;
+
+    &::before {
+      font-size: 14px;
+      top: -15px;
+      letter-spacing: 8px;
+    }
+  }
+`;
+
 const LoadingTitle = styled(motion.h2)`
-  font-family: 'Spline Sans Mono', monospace;
+  font-family: 'Spline Sans Mono', monospace, monospace;
   font-size: 3.5rem;
   font-weight: 700;
-  color: rgb(22, 15, 47);
+  background: linear-gradient(135deg,rgb(33, 23, 69),rgb(200, 140, 255),rgb(53, 17, 91));
+  -webkit-background-clip: text;
+  color: transparent;
   text-align: center;
-  z-index: 1002;
-  position: absolute;
-  top: 35%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   letter-spacing: 0.1em;
-  text-shadow: 0 0 20px rgb(45, 22, 66), 0 0 40px rgb(52, 32, 71);
+  // text-shadow: 0 0 15px rgba(255, 255, 255, 0.29), 0 0 30px rgba(255, 255, 255, 0.39);
+  animation: ${mysticalPulse} 4s ease-in-out infinite;
 
   @media (max-width: 767px) {
     font-size: 2rem;
@@ -505,20 +534,18 @@ const LoadingTitle = styled(motion.h2)`
 `;
 
 const LoadingSubtitle = styled(motion.p)`
-  font-family: 'Spline Sans Mono', monospace;
+  font-family: 'Spline Sans Mono', monospace, monospace;
   font-size: 1.8rem;
   font-weight: 400;
-  color: rgb(22, 15, 47);
+  background: linear-gradient(135deg,rgb(151, 122, 255),rgb(200, 140, 255),rgb(53, 17, 91));
+  -webkit-background-clip: text;
+  color: transparent;
   text-align: center;
-  z-index: 1002;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   font-style: italic;
   letter-spacing: 0.08em;
   line-height: 1.5;
-  text-shadow: 0 0 20px rgb(45, 22, 66), 0 0 40px rgb(52, 32, 71);
+  text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+  animation: ${ghostlyFlicker} 3s ease-in-out infinite;
 
   @media (max-width: 767px) {
     font-size: 1.2rem;
@@ -547,6 +574,7 @@ const StyledVideo = styled.video`
   height: 100%;
   object-fit: cover;
   z-index: 1000;
+  will-change: opacity;
 `;
 
 const Start = () => {
@@ -580,10 +608,8 @@ const Start = () => {
     if (showVideo && videoRef.current && !hasNavigatedRef.current) {
       videoRef.current.play().catch((err) => {
         console.error('Video playback failed:', err);
-        // Fallback: navigate after 10 seconds even if playback fails
       });
 
-      // Set timeout to navigate after 10 seconds
       timeoutRef.current = setTimeout(() => {
         if (!hasNavigatedRef.current) {
           hasNavigatedRef.current = true;
@@ -592,24 +618,22 @@ const Start = () => {
         }
       }, 10000);
 
-      // Handle video end
       videoRef.current.onended = () => {
         if (!hasNavigatedRef.current) {
           hasNavigatedRef.current = true;
-          clearTimeout(timeoutRef.current); // Clear timeout if video ends early
+          clearTimeout(timeoutRef.current);
           setShowVideo(false);
           navigate('/profile', { state: { name, birthDate } });
         }
       };
     }
 
-    // Cleanup
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
       if (videoRef.current) {
-        videoRef.current.onended = null; // Remove event listener
+        videoRef.current.onended = null;
       }
     };
   }, [showVideo, name, birthDate, navigate]);
@@ -846,35 +870,43 @@ const Start = () => {
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {showVideo && (
           <VideoOverlay
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, ease: 'easeInOut' }}
           >
             <StyledVideo ref={videoRef} src={EffectVideo} autoPlay muted playsInline />
-            <LoadingTitle
-              initial={{ opacity: 0, y: 25 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
+            <TextContainer
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1], delay: 0.2 }}
             >
-              Cosmic Journey
-            </LoadingTitle>
-            <LoadingSubtitle
-              initial={{ opacity: 0, y: 25 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.2 }}
-            >
-              Your stellar path is being woven...
-            </LoadingSubtitle>
+              <LoadingTitle
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -30 }}
+                transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1], delay: 0.4 }}
+              >
+                Cosmic Journey
+              </LoadingTitle>
+              <LoadingSubtitle
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -30 }}
+                transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1], delay: 0.8 }}
+              >
+                Your stellar path is being woven...
+              </LoadingSubtitle>
+            </TextContainer>
           </VideoOverlay>
         )}
       </AnimatePresence>
     </Container>
   );
 };
-
-
 
 export default Start;
