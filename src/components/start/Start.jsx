@@ -275,7 +275,8 @@ const CalendarModal = styled(motion.div)`
     width: 90vw;
     max-width: 280px;
     padding: 0.8rem;
-    top: 35%;
+     top: 35%;
+  left: 15%;
   }
 `;
 
